@@ -272,6 +272,3 @@ cd frontend && npm install && npm run dev
 ```
 
 ---
-
-
-Tell me which one and I will add it.
