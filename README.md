@@ -5,7 +5,7 @@
 * 2 NestJS microservices (Product & Order) using REST APIs
 * Inter-service communication (Order → Product)
 * Dockerized PostgreSQL (no external DB URL required)
-* Next.js 14 (App Router) + MUI + Dynamic JSON-driven Form (TEXT, LIST, RADIO)
+* Next.js (App Router) + MUI + Dynamic JSON-driven Form (TEXT, LIST, RADIO)
 
 ---
 
