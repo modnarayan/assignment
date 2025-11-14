@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ProductServiceService } from './product-service.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -30,13 +40,17 @@ export class ProductServiceController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.productService.remove(+id);
+    return { message: 'Product deleted successfully' };
   }
 
   @Put(':id/stock')
   @UsePipes(ValidationPipe)
-  updateStock(@Param('id') id: string, @Body() { quantity }: { quantity: number }) {
+  updateStock(
+    @Param('id') id: string,
+    @Body() { quantity }: { quantity: number },
+  ) {
     return this.productService.updateStock(+id, quantity);
   }
 }

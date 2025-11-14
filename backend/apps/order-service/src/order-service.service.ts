@@ -66,9 +66,14 @@ export class OrderServiceService {
   }
 
   async findOne(id: number): Promise<OrderEntity> {
-    const order = await this.orderRepository.findOneBy({ id });
+    const orderId = Number(id);
+    if (isNaN(orderId) || orderId <= 0) {
+      throw new BadRequestException('Invalid order ID');
+    }
+
+    const order = await this.orderRepository.findOneBy({ id: orderId });
     if (!order) {
-      throw new NotFoundException(`Order with ID ${id} not found`);
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
     }
     return order;
   }
@@ -83,26 +88,40 @@ export class OrderServiceService {
     return updatedOrder;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<string> {
     const order = await this.findOne(id);
     await this.orderRepository.remove(order);
+    return 'Order deleted successfully';
   }
 
   async findAllWithProducts(): Promise<any[]> {
-    const orders = await this.findAll();
-    return Promise.all(
+    const orders = await this.orderRepository.find();
+
+    const enrichedOrders = await Promise.all(
       orders.map(async (order) => {
         let product = null;
-        try {
-          const res = await firstValueFrom(
-            this.httpService.get(
-              `${this.productServiceUrl}/${order.productId}`,
-            ),
-          );
-          product = res.data;
-        } catch {}
-        return { ...order, product };
+        const productId = Number(order.productId);
+        if (!isNaN(productId) && productId > 0) {
+          try {
+            const response = await firstValueFrom(
+              this.httpService.get(`${this.productServiceUrl}/${productId}`),
+            );
+            product = response.data;
+          } catch (error: any) {
+            console.log(
+              `Product ${productId} not found for order ${order.id}. Status: ${error.response?.status}`,
+              'OrderService',
+            );
+          }
+        }
+
+        return {
+          ...order,
+          product, // null if product not found
+        };
       }),
     );
+
+    return enrichedOrders;
   }
 }

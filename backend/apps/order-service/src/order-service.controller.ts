@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { OrderServiceService } from './order-service.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -18,6 +28,11 @@ export class OrderServiceController {
     return this.orderService.findAll();
   }
 
+  @Get('with-products')
+  findAllWithProducts() {
+    return this.orderService.findAllWithProducts();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(+id);
@@ -32,10 +47,5 @@ export class OrderServiceController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
-  }
-
-  @Get('with-products')
-  findAllWithProducts() {
-    return this.orderService.findAllWithProducts();
   }
 }

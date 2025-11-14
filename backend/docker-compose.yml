@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: revest-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: revest_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  product-service:
+    build: .
+    command: npm run start:product
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/revest_db?schema=public
+      - PRODUCT_SERVICE_PORT=3000
+      - ORDER_SERVICE_PORT=3001
+      - PRODUCT_SERVICE_URL=http://product-service:3000/products
+    depends_on:
+      - postgres
+
+  order-service:
+    build: .
+    command: npm run start:order
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/revest_db?schema=public
+      - PRODUCT_SERVICE_PORT=3000
+      - ORDER_SERVICE_PORT=3001
+      - PRODUCT_SERVICE_URL=http://product-service:3000/products
+    depends_on:
+      - postgres
+      - product-service
+
+volumes:
+  postgres_data:
