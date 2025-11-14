@@ -39,7 +39,7 @@ This repository provides a sample implementation for a microservice-based e-comm
 * **Product service**: CRUD for products, stock management.
 * **Order service**: Create orders, validate stock by calling Product service, reduce stock on successful order.
 * **Key API**: `GET /orders/with-products` — returns orders with full product details embedded.
-* **Frontend**: Next.js 14 App Router + MUI with a dynamic JSON-driven form (supports `TEXT`, `LIST`, `RADIO`) validated via Zod + React Hook Form and persisted to `localStorage`.
+* **Frontend**: Next.js 16 App Router + MUI with a dynamic JSON-driven form (supports `TEXT`, `LIST`, `RADIO`) validated via Zod + React Hook Form and persisted to `localStorage`.
 
 Everything is dockerized for easy local setup.
 
