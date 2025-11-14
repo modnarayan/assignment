@@ -45,6 +45,15 @@ Everything is dockerized for easy local setup.
 
 ---
 
+## Clone the Repository
+
+Clone the project first:
+
+```bash
+git clone https://github.com/modnarayan/assignment.git
+cd assignment
+```
+
 ## Quick start — Backend (Docker)
 
 > These steps assume you are at the repository root (`assignment/`).
@@ -211,17 +220,23 @@ ORDER_DB_URL=postgres://postgres:postgres@postgres:5432/revest_db
 NODE_ENV=development
 ```
 
-> The docker-compose file sets up a `postgres` container and links both services to it using the `postgres` hostname 
+> The docker-compose file sets up a `postgres` container and links both services to it using the `postgres` hostname — so you don't need a remote DB URL.
 
 ---
 
+## Implementation notes & highlights
+
+* NestJS microservices use **TypeORM** for DB access and **Axios** (or internal HTTP) for inter-service calls.
+* Order creation flow:
+
+  1. Order service receives order request (`productId`, `quantity`).
+  2. Order service requests product details and stock from Product service.
+  3. If stock is sufficient, Order service creates the order, calculates `totalPrice`, updates product stock (Product service endpoint), and returns `completed`.
+  4. If stock is insufficient, returns a `400` with an explanatory message.
+* `GET /orders/with-products` joins order rows with product details by calling product service for required product details and assembling the combined payload.
+* Frontend focuses on a reusable JSON-driven form that supports three field types and client-side validation.
+
 ---
-
-## Tests (manual)
-
-1. Create a product via Product API.
-2. Create an order via Order API for that product (quantity <= product.stock).
-3. Call `GET /orders/with-products` to verify embedded product details and updated stock.
 
 ---
 
@@ -257,3 +272,6 @@ cd frontend && npm install && npm run dev
 ```
 
 ---
+
+
+Tell me which one and I will add it.
